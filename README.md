@@ -1,4 +1,4 @@
-# Projeto Minishell 42
+# Projeto Mini-shell 42
 
 ## Membros
 
