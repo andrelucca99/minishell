@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 00:00:00 by emerson           #+#    #+#             */
-/*   Updated: 2025/04/23 17:42:05 by eschula          ###   ########.fr       */
+/*   Updated: 2025/04/24 14:56:35 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,18 @@ typedef struct s_shell
     int             last_exit_status;
     int             running;
 } t_shell;
+
+/* Estrutura de Execução */
+
+typedef struct s_cmd
+{
+	char	**argv;			// comando e argumentos
+	char	*input_file;	// para '<'
+	char	*output_file;	// para '>'
+	int		append;			// para '>>'
+	int		is_builtin;
+}	t_cmd;
+
 
 /* Protótipos de funções */
 
