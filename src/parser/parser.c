@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:52:09 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:14:47 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:19:00 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	finalize_command(
 	i = 0;
 	while (i < argc)
 	{
-		// (*cur)->args[i] = gc_strdup(argv[i]);
 		(*cur)->args[i] = argv[i];
 		argv[i] = NULL;
 		i++;

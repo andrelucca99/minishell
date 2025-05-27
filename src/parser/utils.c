@@ -6,24 +6,11 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:49:54 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:28 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:43:44 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void	free_commands(t_command *cmds)
-{
-	t_command	*tmp;
-
-	while (cmds)
-	{
-		tmp = cmds->next;
-		free(cmds->args);
-		free(cmds);
-		cmds = tmp;
-	}
-}
 
 t_command	*new_command(void)
 {

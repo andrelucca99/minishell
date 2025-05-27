@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:14:23 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:44:04 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,10 @@ int		should_execute_builtin_in_parent(t_command *cmd);
 
 /* parser / lexer */
 t_token			*lexer(const char *line);
-void			free_tokens(t_token *tokens);
 t_command		*parse_tokens(t_token *tokens);
 void			add_token(t_token **head, t_token *new);
 t_token_type	get_operator_type(const char *s, int *len);
 t_token			*new_token(t_token_type type, const char *value);
-void			free_commands(t_command *cmds);
 t_command		*new_command(void);
 void			add_command(t_command **head, t_command *new);
 

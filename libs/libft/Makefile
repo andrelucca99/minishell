@@ -25,6 +25,7 @@ SRC = ./ft_isascii.c \
 	  ./ft_memcpy.c \
 	  ./ft_memmove.c \
 	  ./ft_strlen.c \
+	  ./ft_strcpy.c \
 	  ./ft_strlcpy.c \
 	  ./ft_substr.c \
 	  ./ft_strjoin.c \

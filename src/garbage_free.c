@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:22:14 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:33 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:44:40 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char *gc_strdup(const char *s)
 	char *dup = gc_malloc(len + 1);
 	if (!dup)
 		return (NULL);
-	strcpy(dup, s); // recriar função na libft
+	ft_strcpy(dup, s);
 	return (dup);
 }
 
@@ -54,20 +54,6 @@ char *gc_strndup(const char *s, size_t n)
 	dup[len] = '\0';
 	return (dup);
 }
-
-// void gc_clear(void)
-// {
-// 	t_gc_node *node = g_gc.head;
-// 	t_gc_node *tmp;
-// 	while (node)
-// 	{
-// 		tmp = node->next;
-// 		free(node->ptr);
-// 		free(node);
-// 		node = tmp;
-// 	}
-// 	g_gc.head = NULL;
-// }
 
 void gc_clear(void)
 {
