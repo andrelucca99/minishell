@@ -1,36 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   sigint.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:39:51 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:13:59 by alucas-e         ###   ########.fr       */
+/*   Created: 2025/05/12 16:46:15 by andre             #+#    #+#             */
+/*   Updated: 2025/05/13 19:11:27 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *str)
-{
-	int	i;
-	int	signal;
+#include "../include/minishell.h"
 
-	i = 0;
-	signal = 1;
-	while ((*str >= '\t' && *str <= '\r') || *str == ' ')
-		str++;
-	if (*str == '-' || *str == '+')
-	{
-		if (*str == '-')
-			signal *= -1;
-		str++;
-	}
-	while (*str >= '0' && *str <= '9')
-	{
-		i *= 10;
-		i += *str - '0';
-		str++;
-	}
-	i *= signal;
-	return (i);
+void	handle_sigint(int signo)
+{
+	(void)signo;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }

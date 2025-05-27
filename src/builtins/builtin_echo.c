@@ -1,36 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:39:51 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:13:59 by alucas-e         ###   ########.fr       */
+/*   Created: 2025/05/09 15:28:32 by alucas-e          #+#    #+#             */
+/*   Updated: 2025/05/27 16:11:32 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *str)
+#include "../../include/minishell.h"
+
+int	builtin_echo(char **args)
 {
 	int	i;
-	int	signal;
 
-	i = 0;
-	signal = 1;
-	while ((*str >= '\t' && *str <= '\r') || *str == ' ')
-		str++;
-	if (*str == '-' || *str == '+')
+	i = 1;
+	while (args[i])
 	{
-		if (*str == '-')
-			signal *= -1;
-		str++;
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i++;
 	}
-	while (*str >= '0' && *str <= '9')
-	{
-		i *= 10;
-		i += *str - '0';
-		str++;
-	}
-	i *= signal;
-	return (i);
+	printf("\n");
+	return (0);
 }

@@ -1,36 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:39:51 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:13:59 by alucas-e         ###   ########.fr       */
+/*   Created: 2025/05/09 17:02:51 by alucas-e          #+#    #+#             */
+/*   Updated: 2025/05/16 15:56:41 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *str)
-{
-	int	i;
-	int	signal;
+#include "./libft.h"
 
+char	*ft_strndup(const char *s, size_t n)
+{
+	size_t	len;
+	size_t	i;
+	char	*copy;
+
+	len = 0;
+	while (s[len] && len < n)
+		len++;
+	copy = malloc(len + 1);
+	if (!copy)
+		return (NULL);
 	i = 0;
-	signal = 1;
-	while ((*str >= '\t' && *str <= '\r') || *str == ' ')
-		str++;
-	if (*str == '-' || *str == '+')
+	while (i < len)
 	{
-		if (*str == '-')
-			signal *= -1;
-		str++;
+		copy[i] = s[i];
+		i++;
 	}
-	while (*str >= '0' && *str <= '9')
-	{
-		i *= 10;
-		i += *str - '0';
-		str++;
-	}
-	i *= signal;
-	return (i);
+	copy[len] = '\0';
+	return (copy);
 }
