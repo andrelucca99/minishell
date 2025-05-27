@@ -1,36 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strtok.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/15 11:39:51 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:13:59 by alucas-e         ###   ########.fr       */
+/*   Created: 2025/05/09 17:09:33 by alucas-e          #+#    #+#             */
+/*   Updated: 2025/05/09 17:16:10 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *str)
-{
-	int	i;
-	int	signal;
+#include "./libft.h"
 
-	i = 0;
-	signal = 1;
-	while ((*str >= '\t' && *str <= '\r') || *str == ' ')
-		str++;
-	if (*str == '-' || *str == '+')
+char	*ft_strtok(char *str, const char *delim)
+{
+	static char	*save;
+	char		*start;
+
+	if (str)
+		save = str;
+	if (!save || !*save)
+		return (NULL);
+	while (*save && ft_strchr(delim, *save))
+		save++;
+	if (!*save)
+		return (NULL);
+	start = save;
+	while (*save && !ft_strchr(delim, *save))
+		save++;
+	if (*save)
 	{
-		if (*str == '-')
-			signal *= -1;
-		str++;
+		*save = '\0';
+		save++;
 	}
-	while (*str >= '0' && *str <= '9')
-	{
-		i *= 10;
-		i += *str - '0';
-		str++;
-	}
-	i *= signal;
-	return (i);
+	return (start);
 }
