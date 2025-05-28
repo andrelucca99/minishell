@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 19:30:34 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:17 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:38:48 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,28 @@ int	should_execute_builtin_in_parent(t_command *cmd)
 {
 	return (!cmd->next && is_builtin(cmd->args[0])
 		&& !cmd->input_file && !cmd->output_file);
+}
+
+int handle_heredoc(const char *delim)
+{
+	int fd[2];
+	char *line;
+
+	if (pipe(fd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || strcmp(line, delim) == 0)
+			break;
+		write(fd[1], line, strlen(line));
+		write(fd[1], "\n", 1);
+		free(line);
+	}
+	free(line);
+	close(fd[1]);
+	return fd[0];
 }

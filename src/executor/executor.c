@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:37:17 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:15 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:45:40 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,18 @@ static void	setup_redirections(t_command *cmd, int fd_in, int fd[2])
 	int	in;
 	int	out;
 
-	if (cmd->input_file)
+	if (cmd->heredoc_delim)
+	{
+		in = handle_heredoc(cmd->heredoc_delim);
+		if (in < 0)
+		{
+			gc_clear();
+			exit(1);
+		}
+		dup2(in, STDIN_FILENO);
+		close(in);
+	}
+	else if (cmd->input_file)
 	{
 		in = open(cmd->input_file, O_RDONLY);
 		if (in < 0)
@@ -67,17 +78,15 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2])
 	setup_redirections(cmd, fd_in, fd);
 
 	if (is_builtin(cmd->args[0]))
-		{
-			tmp = exec_builtin(cmd->args);
-			gc_clear();
-			exit(tmp);
-		}
+	{
+		tmp = exec_builtin(cmd->args);
+		exit(tmp);
+	}
 
 	path = find_executable(cmd->args[0]);
 	if (!path)
 	{
 		fprintf(stderr, "command not found: %s\n", cmd->args[0]);
-		gc_clear();
 		exit(127);
 	}
 	execve(path, cmd->args, environ);

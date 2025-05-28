@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:44:04 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:39:03 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,13 @@
 # define MAX_ARGS 128
 
 extern char	**environ;
+
+typedef struct s_shell
+{
+	char	**env;
+	int		last_exit_status;
+	int		running;
+}	t_shell;
 
 typedef enum e_token_type
 {
@@ -82,9 +89,10 @@ int	builtin_exit(void);
 void	execute_commands(t_command *cmds);
 char	*find_executable(char *cmd);
 int		should_execute_builtin_in_parent(t_command *cmd);
+int handle_heredoc(const char *delim);
 
 /* parser / lexer */
-t_token			*lexer(const char *line);
+t_token	*lexer(const char *line, t_shell *shell);
 t_command		*parse_tokens(t_token *tokens);
 void			add_token(t_token **head, t_token *new);
 t_token_type	get_operator_type(const char *s, int *len);
@@ -100,6 +108,8 @@ void gc_clear(void);
 char *gc_strndup(const char *s, size_t n);
 char *gc_strdup(const char *s);
 void *gc_malloc(size_t size);
+
+char *expand_variables(const char *str, t_shell *shell);
 
 void	gc_list(void);
 
