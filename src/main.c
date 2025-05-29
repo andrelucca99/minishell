@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/28 15:12:55 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:01:59 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(void)
 		line = readline("minishell$ ");
 		if (!line)
 		{
-			printf("exit\n");
+				printf("exit\n");
 			break ;
 		}
 		if (*line)

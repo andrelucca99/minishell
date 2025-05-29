@@ -1,7 +1,7 @@
 NAME = libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fPIC
+CFLAGS = -Wall -Wextra -Werror -fPIC -g
 
 SRC = ./ft_isascii.c \
 	  ./ft_isalpha.c \
