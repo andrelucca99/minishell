@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/28 17:39:03 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:05:14 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,16 +77,16 @@ typedef struct s_gc
 /* builtins */
 
 int	is_builtin(char *cmd);
-int	exec_builtin(char **args);
+int	exec_builtin(char **args, t_shell *shell);
 
 int	builtin_echo(char **args);
 int	builtin_pwd(void);
 int	builtin_env(void);
 int	builtin_cd(char **args);
-int	builtin_exit(void);
+int	builtin_exit(char **args, t_shell *shell);
 
 /* executor */
-void	execute_commands(t_command *cmds);
+void	execute_commands(t_command *cmds, t_shell *shell);
 char	*find_executable(char *cmd);
 int		should_execute_builtin_in_parent(t_command *cmd);
 int handle_heredoc(const char *delim);

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/29 14:01:59 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:47:40 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	main(void)
 			add_history(line);
 		tokens = lexer(line, &shell);
 		cmds = parse_tokens(tokens);
-		execute_commands(cmds);
+		execute_commands(cmds, &shell);
 
 		free(line);
 		gc_clear();
 	}
-	return (0);
+	return (shell.last_exit_status);
 }

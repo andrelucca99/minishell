@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 19:30:34 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/28 17:38:48 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:55:24 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ int handle_heredoc(const char *delim)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || strcmp(line, delim) == 0)
+		if (!line || ft_strcmp(line, delim) == 0)
 			break;
-		write(fd[1], line, strlen(line));
+		write(fd[1], line, ft_strlen(line));
 		write(fd[1], "\n", 1);
 		free(line);
 	}

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:52:09 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/28 15:13:57 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:29:38 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 	int				op_len;
 	int				start;
 	char			*value;
+	char			*tmp;
 
 	if (line[i] == '\'' || line[i] == '"')
 	{
@@ -129,7 +130,10 @@ int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 			return (i + 1);
 		}
 		if (quote == '"')
-			value = expand_variables(value, shell);
+		{
+			tmp = expand_variables(value, shell);
+			value = tmp;
+		}
 		add_token(tokens, new_token(TOKEN_WORD, value));
 		return (next);
 	}
@@ -146,7 +150,8 @@ int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 		while (line[i] && !isspace(line[i]) && !ft_strchr("|<>", line[i]))
 			i++;
 		value = gc_strndup(&line[start], i - start);
-		value = expand_variables(value, shell);
+		tmp = expand_variables(value, shell);
+		value = tmp;
 		add_token(tokens, new_token(TOKEN_WORD, value));
 		return (i);
 	}
