@@ -6,18 +6,29 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:37:17 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:12:15 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:34:08 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	setup_redirections(t_command *cmd, int fd_in, int fd[2])
+static void	setup_redirections(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 {
 	int	in;
 	int	out;
 
-	if (cmd->input_file)
+	if (cmd->heredoc_delim)
+	{
+		in = handle_heredoc(cmd->heredoc_delim, cmd->heredoc_expand, shell);
+		if (in < 0)
+		{
+			gc_clear();
+			exit(1);
+		}
+		dup2(in, STDIN_FILENO);
+		close(in);
+	}
+	else if (cmd->input_file)
 	{
 		in = open(cmd->input_file, O_RDONLY);
 		if (in < 0)
@@ -56,7 +67,7 @@ static void	setup_redirections(t_command *cmd, int fd_in, int fd[2])
 	}
 }
 
-static void	execute_child(t_command *cmd, int fd_in, int fd[2])
+static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 {
 	char	*path;
 	int		tmp;
@@ -64,20 +75,18 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2])
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
 
-	setup_redirections(cmd, fd_in, fd);
+	setup_redirections(cmd, fd_in, fd, shell);
 
 	if (is_builtin(cmd->args[0]))
-		{
-			tmp = exec_builtin(cmd->args);
-			gc_clear();
-			exit(tmp);
-		}
+	{
+		tmp = exec_builtin(cmd->args, shell);
+		exit(tmp);
+	}
 
 	path = find_executable(cmd->args[0]);
 	if (!path)
 	{
 		fprintf(stderr, "command not found: %s\n", cmd->args[0]);
-		gc_clear();
 		exit(127);
 	}
 	execve(path, cmd->args, environ);
@@ -86,7 +95,7 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2])
 	exit(1);
 }
 
-static void	wait_for_children(void)
+static void	wait_for_children(t_shell *shell)
 {
 	int	status;
 	int	sig;
@@ -101,10 +110,12 @@ static void	wait_for_children(void)
 			else if (sig == SIGINT)
 				write(STDERR_FILENO, "\n", 1);
 		}
+		if (WIFEXITED(status))
+			shell->last_exit_status = WEXITSTATUS(status);
 	}
 }
 
-void	execute_commands(t_command *cmds)
+void	execute_commands(t_command *cmds, t_shell *shell)
 {
 	int		fd[2];
 	int		fd_in;
@@ -113,7 +124,7 @@ void	execute_commands(t_command *cmds)
 	fd_in = STDIN_FILENO;
 	if (should_execute_builtin_in_parent(cmds))
 	{
-		exec_builtin(cmds->args);
+		shell->last_exit_status = exec_builtin(cmds->args, shell);
 		return ;
 	}
 
@@ -126,7 +137,7 @@ void	execute_commands(t_command *cmds)
 		}
 		pid = fork();
 		if (pid == 0)
-			execute_child(cmds, fd_in, fd);
+			execute_child(cmds, fd_in, fd, shell);
 		if (fd_in != STDIN_FILENO)
 			close(fd_in);
 		if (cmds->next)
@@ -136,5 +147,5 @@ void	execute_commands(t_command *cmds)
 		}
 		cmds = cmds->next;
 	}
-	wait_for_children();
+	wait_for_children(shell);
 }

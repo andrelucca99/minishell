@@ -12,6 +12,13 @@ Com base no conteúdo do PDF do projeto **Minishell** (versão 8.3), aqui está 
 
 ---
 
+### FAZER DEPOIS
+
+ - Tratar status code ao sair do minishell
+ - Armazenar o status code
+ - Armazenar num arquivo temporario
+ - Colocar expandir var HEREDOC
+
 ### 🔹 Semana 1 — Construção do núcleo
 
 | Dia | Pessoa A (Lexing/Parsing)                         | Pessoa B (Execução)                                  |

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:52:09 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:14:47 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:59:02 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,23 @@ static void	handle_redirection(t_token **tokens, t_command *cur)
 	else if (t->type == TOKEN_HEREDOC && t->next)
 	{
 		*tokens = t->next;
-		cur->heredoc_delim = gc_strdup((*tokens)->value);
+		char *val = (*tokens)->value;
+		size_t len = ft_strlen(val);
+
+		if ((val[0] == '\'' || val[0] == '\"') && len >= 2 && val[len - 1] == val[0])
+		{
+			cur->heredoc_expand = 0;
+			char *clean = gc_malloc(len - 1);
+			if (!clean)
+			   return ;
+			ft_strlcpy(clean, val + 1, len - 1);
+			cur->heredoc_delim = gc_strdup(clean);
+		}
+		else
+		{
+			cur->heredoc_expand = 1;
+			cur->heredoc_delim = gc_strdup(val);
+		}
 	}
 }
 
@@ -60,7 +76,6 @@ static void	finalize_command(
 	i = 0;
 	while (i < argc)
 	{
-		// (*cur)->args[i] = gc_strdup(argv[i]);
 		(*cur)->args[i] = argv[i];
 		argv[i] = NULL;
 		i++;
@@ -102,12 +117,41 @@ t_command	*parse_tokens(t_token *tokens)
 	return (cmds);
 }
 
-int	process_token(const char *line, int i, t_token **tokens)
+int	extract_quoted_token(const char *line, int start, char quote, char **out)
+{
+	int	i = start + 1;
+
+	while (line[i] && line[i] != quote)
+		i++;
+	if (!line[i])
+		return (-1);
+	if (out)
+	    *out = gc_strndup(&line[start + 1], i - start - 1);
+	return (i + 1);
+}
+
+int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 {
 	t_token_type	type;
 	int				op_len;
 	int				start;
+	char			*value;
+	char			*tmp;
 
+	if (line[i] == '\'' || line[i] == '"')
+	{
+		char quote = line[i];
+		start = i;
+		int next = extract_quoted_token(line, i, quote, NULL);
+		if (next == -1)
+		{
+			fprintf(stderr, "minishell: erro de aspas não fechadas\n");
+			return (i + 1);
+		}
+		char *raw_token = gc_strndup(&line[start], next - start);
+		add_token(tokens, new_token(TOKEN_WORD, raw_token));
+		return (next);
+	}
 	op_len = 0;
 	type = get_operator_type(&line[i], &op_len);
 	if (type != TOKEN_WORD)
@@ -120,13 +164,15 @@ int	process_token(const char *line, int i, t_token **tokens)
 		start = i;
 		while (line[i] && !isspace(line[i]) && !ft_strchr("|<>", line[i]))
 			i++;
-		add_token(tokens,
-			new_token(TOKEN_WORD, gc_strndup(&line[start], i - start)));
+		value = gc_strndup(&line[start], i - start);
+		tmp = expand_variables(value, shell);
+		value = tmp;
+		add_token(tokens, new_token(TOKEN_WORD, value));
 		return (i);
 	}
 }
 
-t_token	*lexer(const char *line)
+t_token	*lexer(const char *line, t_shell *shell)
 {
 	t_token	*tokens;
 	int		i;
@@ -140,7 +186,7 @@ t_token	*lexer(const char *line)
 			i++;
 			continue ;
 		}
-		i = process_token(line, i, &tokens);
+		i = process_token(line, i, &tokens, shell);
 	}
 	return (tokens);
 }

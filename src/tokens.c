@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:10:46 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 15:06:29 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:43:53 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,4 @@ t_token_type	get_operator_type(const char *s, int *len)
 	if (s[0] == '|')
 		return (*len = 1, TOKEN_PIPE);
 	return (TOKEN_WORD);
-}
-
-void	free_tokens(t_token *tokens)
-{
-	t_token	*tmp;
-
-	while (tokens)
-	{
-		tmp = tokens->next;
-		free(tokens->value);
-		free(tokens);
-		tokens = tmp;
-	}
 }
