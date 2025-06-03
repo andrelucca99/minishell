@@ -8,7 +8,7 @@ SRCS = src/main.c src/garbage_free.c src/sigint.c \
 	src/executor/executor.c src/executor/utils.c src/tokens.c \
 	src/builtins/builtin_echo.c src/builtins/builtin_pwd.c \
 	src/builtins/builtin_env.c src/builtins/builtin_cd.c \
-	src/builtins/builtin_exit.c
+	src/builtins/builtin_export.c src/builtins/builtin_unset.c src/builtins/builtin_exit.c
 
 OBJS = $(SRCS:.c=.o)
 

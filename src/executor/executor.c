@@ -6,20 +6,20 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:37:17 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/29 19:04:18 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:34:08 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	setup_redirections(t_command *cmd, int fd_in, int fd[2])
+static void	setup_redirections(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 {
 	int	in;
 	int	out;
 
 	if (cmd->heredoc_delim)
 	{
-		in = handle_heredoc(cmd->heredoc_delim);
+		in = handle_heredoc(cmd->heredoc_delim, cmd->heredoc_expand, shell);
 		if (in < 0)
 		{
 			gc_clear();
@@ -75,7 +75,7 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
 
-	setup_redirections(cmd, fd_in, fd);
+	setup_redirections(cmd, fd_in, fd, shell);
 
 	if (is_builtin(cmd->args[0]))
 	{

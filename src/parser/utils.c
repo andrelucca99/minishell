@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:49:54 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/29 17:29:17 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:30:45 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_command	*new_command(void)
 	cmd->output_file = NULL;
 	cmd->append_mode = 0;
 	cmd->heredoc_delim = NULL;
+	cmd->heredoc_expand = 0;
 	cmd->next = NULL;
 	return (cmd);
 }
