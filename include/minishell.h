@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/03 15:46:56 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:11:43 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <sys/wait.h>
 # include "../libs/libft/libft.h"
 
-# define MAX_ARGS 128
+# define MAX_ARGS 128 // remover
 
 extern char	**environ;
 
@@ -50,6 +50,7 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*value;
+	int				expand;
 	struct s_token	*next;
 }	t_token;
 
@@ -96,7 +97,7 @@ int		handle_heredoc(const char *delim, int expand, t_shell *shell);
 
 /* parser / lexer */
 t_token	*lexer(const char *line, t_shell *shell);
-t_command		*parse_tokens(t_token *tokens);
+t_command *parse_tokens(t_token *tokens, t_shell *shell);
 void			add_token(t_token **head, t_token *new);
 t_token_type	get_operator_type(const char *s, int *len);
 t_token			*new_token(t_token_type type, const char *value);
@@ -115,5 +116,7 @@ void *gc_malloc(size_t size);
 char *expand_variables(const char *str, t_shell *shell);
 
 void	gc_list(void);
+
+int extract_mixed_token(const char *line, int start, char **out, t_shell *shell);
 
 #endif

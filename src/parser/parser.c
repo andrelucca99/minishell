@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:52:09 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/03 16:59:02 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:04:40 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,25 +35,17 @@ static void	handle_redirection(t_token **tokens, t_command *cur)
 	}
 	else if (t->type == TOKEN_HEREDOC && t->next)
 	{
-		*tokens = t->next;
-		char *val = (*tokens)->value;
-		size_t len = ft_strlen(val);
+		// t->type == TOKEN_HEREDOC significa que fizemos match em “<<”
+		// o próximo token (t->next) será o delimitador, e esse token já carrega
+		// o valor sem aspas em t->next->value, e sabe se t->next->expand é 0 ou 1.
 
-		if ((val[0] == '\'' || val[0] == '\"') && len >= 2 && val[len - 1] == val[0])
-		{
-			cur->heredoc_expand = 0;
-			char *clean = gc_malloc(len - 1);
-			if (!clean)
-			   return ;
-			ft_strlcpy(clean, val + 1, len - 1);
-			cur->heredoc_delim = gc_strdup(clean);
-		}
-		else
-		{
-			cur->heredoc_expand = 1;
-			cur->heredoc_delim = gc_strdup(val);
-		}
+		*tokens = t->next; // pula para o token do delimitador
+		char *val = (*tokens)->value;      // e.g. "EOF" ou "EOF" sem aspa
+		int expand_for_heredoc = (*tokens)->expand;
+		cur->heredoc_delim = gc_strdup(val);
+		cur->heredoc_expand  = expand_for_heredoc;
 	}
+
 }
 
 static void	finalize_command(
@@ -85,36 +77,45 @@ static void	finalize_command(
 	*cur = new_command();
 }
 
-t_command	*parse_tokens(t_token *tokens)
+t_command *parse_tokens(t_token *tokens, t_shell *shell)
 {
-	t_command	*cmds;
-	t_command	*cur;
-	char		*argv[MAX_ARGS] = {0};
-	int			argc;
+    t_command *cmds = NULL;
+    t_command *cur = new_command();
+    char *argv[MAX_ARGS] = {0};
+    int argc = 0;
 
-	cmds = NULL;
-	cur = new_command();
-	argc = 0;
-	while (tokens)
-	{
-		if (tokens->type == TOKEN_WORD)
-			argv[argc++] = gc_strdup(tokens->value);
-		else if (tokens->type == TOKEN_PIPE)
-		{
-			finalize_command(&cmds, &cur, argv, argc);
-			argc = 0;
-		}
-		else
-			handle_redirection(&tokens, cur);
-		tokens = tokens->next;
-	}
-	if (argc > 0)
-		finalize_command(&cmds, &cur, argv, argc);
-	else if (cur && cur->args == NULL)
-		free(cur);
-	else
-		add_command(&cmds, cur);
-	return (cmds);
+    while (tokens)
+    {
+        if (tokens->type == TOKEN_WORD)
+        {
+            // Se tiver expand=1, chamamos expand aqui; se for expand=0, pegamos
+            // o valor literal sem modificação.
+            char *val = tokens->expand
+                ? expand_variables(tokens->value, shell)
+                : tokens->value;
+            argv[argc++] = gc_strdup(val);
+        }
+        else if (tokens->type == TOKEN_PIPE)
+        {
+            finalize_command(&cmds, &cur, argv, argc);
+            argc = 0;
+        }
+        else
+        {
+            // Redirecionamentos (<, >, >>, <<)
+            handle_redirection(&tokens, cur);
+        }
+        tokens = tokens->next;
+    }
+
+    if (argc > 0)
+        finalize_command(&cmds, &cur, argv, argc);
+    else if (cur && cur->args == NULL)
+        free(cur);
+    else
+        add_command(&cmds, cur);
+
+    return cmds;
 }
 
 int	extract_quoted_token(const char *line, int start, char quote, char **out)
@@ -130,47 +131,71 @@ int	extract_quoted_token(const char *line, int start, char quote, char **out)
 	return (i + 1);
 }
 
-int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
+static t_token *new_token_with_expand(t_token_type type, char *value, int expand)
+{
+	t_token *token;
+
+	token = gc_malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->type = type;
+	token->value = value;
+	token->expand = expand;
+	token->next = NULL;
+	return (token);
+}
+
+int process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 {
 	t_token_type	type;
 	int				op_len;
 	int				start;
 	char			*value;
-	char			*tmp;
 
 	if (line[i] == '\'' || line[i] == '"')
 	{
+		// --- Caso de token entre aspas ---
 		char quote = line[i];
-		start = i;
-		int next = extract_quoted_token(line, i, quote, NULL);
+		int next = extract_quoted_token(line, i, quote, &value);
 		if (next == -1)
 		{
 			fprintf(stderr, "minishell: erro de aspas não fechadas\n");
-			return (i + 1);
+			return i + 1;
 		}
-		char *raw_token = gc_strndup(&line[start], next - start);
-		add_token(tokens, new_token(TOKEN_WORD, raw_token));
-		return (next);
+
+		// Se for aspas duplas → expandir
+		if (quote == '"')
+		{
+			char *expanded = expand_variables(value, shell);
+			add_token(tokens, new_token_with_expand(TOKEN_WORD, expanded, 0));  // já expandido
+		}
+		else
+			add_token(tokens, new_token_with_expand(TOKEN_WORD, value, 0));  // sem expansão
+		return next;
 	}
+
+	// --- Detecta operador: |, <, >, <<, >> ---
 	op_len = 0;
 	type = get_operator_type(&line[i], &op_len);
 	if (type != TOKEN_WORD)
 	{
-		add_token(tokens, new_token(type, gc_strndup(&line[i], op_len)));
-		return (i + op_len);
+		add_token(tokens, new_token_with_expand(type, gc_strndup(&line[i], op_len), 0));
+		return i + op_len;
 	}
-	else
-	{
-		start = i;
-		while (line[i] && !isspace(line[i]) && !ft_strchr("|<>", line[i]))
-			i++;
-		value = gc_strndup(&line[start], i - start);
-		tmp = expand_variables(value, shell);
-		value = tmp;
-		add_token(tokens, new_token(TOKEN_WORD, value));
-		return (i);
-	}
+
+	// --- Palavra simples (ex: EOF, $USER, abc) ---
+	start = i;
+	while (line[i] && !isspace(line[i]) && !ft_strchr("|<>", line[i]))
+		i++;
+
+	value = gc_strndup(&line[start], i - start);
+
+	// ⚠️ Aqui é importante: como não veio entre aspas, marcamos expand = 1
+	add_token(tokens, new_token_with_expand(TOKEN_WORD, value, 1));
+
+	return i;
 }
+
 
 t_token	*lexer(const char *line, t_shell *shell)
 {

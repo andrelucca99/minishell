@@ -1,10 +1,10 @@
 NAME = minishell
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 SRCS = src/main.c src/garbage_free.c src/sigint.c \
-	src/builtins/builtins.c src/parser/parser.c src/parser/utils.c \
+	src/builtins/builtins.c src/parser/parser.c src/parser/extract_mixed_token.c src/parser/utils.c \
 	src/executor/executor.c src/executor/utils.c src/tokens.c \
 	src/builtins/builtin_echo.c src/builtins/builtin_pwd.c \
 	src/builtins/builtin_env.c src/builtins/builtin_cd.c \
