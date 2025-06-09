@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 14:51:31 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:55:59 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <sys/wait.h>
 # include "../libs/libft/libft.h"
 
-# define MAX_ARGS 128 // remover
+# define MAX_ARGS 128
 
 extern char	**environ;
 
