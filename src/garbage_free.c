@@ -12,14 +12,16 @@
 
 #include "../include/minishell.h"
 
-t_gc g_gc = { NULL };
+t_gc		g_gc = {NULL};
+t_gc_node	*node;
+void		*ptr;
 
-void *gc_malloc(size_t size)
+void	*gc_malloc(size_t size)
 {
-	void *ptr = malloc(size);
+	ptr = malloc(size);
 	if (!ptr)
 		return (NULL);
-	t_gc_node *node = malloc(sizeof(t_gc_node));
+	node = malloc(sizeof(t_gc_node));
 	if (!node)
 	{
 		free(ptr);
@@ -31,37 +33,50 @@ void *gc_malloc(size_t size)
 	return (ptr);
 }
 
-char *gc_strdup(const char *s)
+char	*gc_strdup(const char *s)
 {
-	size_t len = ft_strlen(s);
-	char *dup = gc_malloc(len + 1);
+	size_t	len;
+	char	*dup;
+
+	len = ft_strlen(s);
+	dup = gc_malloc(len + 1);
 	if (!dup)
 		return (NULL);
 	ft_strcpy(dup, s);
 	return (dup);
 }
 
-char *gc_strndup(const char *s, size_t n)
+char	*gc_strndup(const char *s, size_t n)
 {
-	size_t len = 0;
+	size_t	len;
+	size_t	i;
+	char	*dup;
+
+	len = 0;
 	while (s[len] && len < n)
 		len++;
-	char *dup = gc_malloc(len + 1);
+	dup = gc_malloc(len + 1);
 	if (!dup)
 		return (NULL);
-	for (size_t i = 0; i < len; i++)
+	i = 0;
+	while (i < len)
+	{
 		dup[i] = s[i];
+		i++;
+	}
 	dup[len] = '\0';
 	return (dup);
 }
 
-void gc_clear(void)
+void	gc_clear(void)
 {
-	t_gc_node **cur = &g_gc.head;
+	t_gc_node	**cur;
+	t_gc_node	*next;
 
+	cur = &g_gc.head;
 	while (*cur)
 	{
-		t_gc_node *next = (*cur)->next;
+		next = (*cur)->next;
 		free((*cur)->ptr);
 		free(*cur);
 		*cur = next;

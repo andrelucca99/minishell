@@ -12,7 +12,8 @@
 
 #include "../../include/minishell.h"
 
-static void	setup_redirections(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
+static void	setup_redirections(t_command *cmd, int fd_in, int fd[2],
+		t_shell *shell)
 {
 	int	in;
 	int	out;
@@ -45,11 +46,11 @@ static void	setup_redirections(t_command *cmd, int fd_in, int fd[2], t_shell *sh
 		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
 	}
-
 	if (cmd->output_file)
 	{
 		out = open(cmd->output_file,
-			O_WRONLY | O_CREAT | (cmd->append_mode ? O_APPEND : O_TRUNC), 0644); // trocar ternário
+				O_WRONLY | O_CREAT | (cmd->append_mode ? O_APPEND : O_TRUNC),
+				0644); // trocar ternário
 		if (out < 0)
 		{
 			perror("open output");
@@ -74,15 +75,12 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
-
 	setup_redirections(cmd, fd_in, fd, shell);
-
 	if (is_builtin(cmd->args[0]))
 	{
 		tmp = exec_builtin(cmd->args, shell);
 		exit(tmp);
 	}
-
 	path = find_executable(cmd->args[0]);
 	if (!path)
 	{
@@ -127,7 +125,6 @@ void	execute_commands(t_command *cmds, t_shell *shell)
 		shell->last_exit_status = exec_builtin(cmds->args, shell);
 		return ;
 	}
-
 	while (cmds)
 	{
 		if (cmds->next && pipe(fd) == -1)

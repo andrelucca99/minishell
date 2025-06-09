@@ -24,7 +24,6 @@ int	main(void)
 	shell.running = 1;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
-
 	while (shell.running)
 	{
 		line = readline("minishell$ ");

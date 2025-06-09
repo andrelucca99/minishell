@@ -14,12 +14,13 @@
 
 int	builtin_echo(char **args, t_shell *shell)
 {
-	int	i;
+	int		i;
+	char	*expanded;
 
 	i = 1;
 	while (args[i])
 	{
-		char *expanded = expand_variables(args[i], shell);
+		expanded = expand_variables(args[i], shell);
 		printf("%s", expanded);
 		if (args[i + 1])
 			printf(" ");

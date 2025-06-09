@@ -12,17 +12,17 @@
 
 #include "../../include/minishell.h"
 
-int builtin_unset(char **args, t_shell *shell)
+int	builtin_unset(char **args, t_shell *shell)
 {
-	int i;
-	char *expanded;
+	int		i;
+	char	*expanded;
 
 	i = 1;
 	while (args[i])
 	{
-       expanded = expand_variables(args[i], shell);
-	   unsetenv(expanded);
-	   i++;
+		expanded = expand_variables(args[i], shell);
+		unsetenv(expanded);
+		i++;
 	}
 	return (0);
 }

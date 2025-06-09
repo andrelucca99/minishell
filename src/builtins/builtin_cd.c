@@ -14,12 +14,12 @@
 
 int	builtin_cd(char **args, t_shell *shell)
 {
-	char *path;
+	char	*path;
 
 	if (!args[1])
 		return (chdir(getenv("HOME")));
 	else
-	    path = expand_variables(args[1], shell);
+		path = expand_variables(args[1], shell);
 	if (chdir(path) != 0)
 	{
 		perror("cd");

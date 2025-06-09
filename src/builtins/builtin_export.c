@@ -12,11 +12,16 @@
 
 #include "../../include/minishell.h"
 
-int builtin_export(char **args, t_shell *shell)
+int	builtin_export(char **args, t_shell *shell)
 {
-	int i = 1;
-	int j;
+	int		i;
+	int		j;
+	char	*expanded;
+	char	*equal;
+	char	*name;
+	char	*value;
 
+	i = 1;
 	if (!args[1])
 	{
 		// Sem argumentos: listar variáveis (como bash)
@@ -24,31 +29,26 @@ int builtin_export(char **args, t_shell *shell)
 		while (shell->env[j])
 		{
 			printf("declare -x %s\n", shell->env[j]);
-		    j++;
+			j++;
 		}
-	    return (0);
+		return (0);
 	}
-
 	while (args[i])
 	{
-		char *expanded = expand_variables(args[i], shell);
-		char *equal = ft_strchr(expanded, '=');
-
+		expanded = expand_variables(args[i], shell);
+		equal = ft_strchr(expanded, '=');
 		if (!equal)
 		{
 			fprintf(stderr, "export: `%s`: not a valid identifier\n", expanded);
 			i++;
-			continue;
+			continue ;
 		}
-
 		// Divide em nome e valor
 		*equal = '\0';
-		char *name = expanded;
-		char *value = equal + 1;
-
+		name = expanded;
+		value = equal + 1;
 		if (setenv(name, value, 1) != 0)
 			perror("export");
-
 		i++;
 	}
 	return (0);

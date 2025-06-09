@@ -42,44 +42,47 @@ char	*find_executable(char *cmd)
 
 int	should_execute_builtin_in_parent(t_command *cmd)
 {
-	return (!cmd->next && is_builtin(cmd->args[0])
-		&& !cmd->input_file && !cmd->output_file);
+	return (!cmd->next && is_builtin(cmd->args[0]) && !cmd->input_file
+		&& !cmd->output_file);
 }
 
-int handle_heredoc(const char *delim, int expand, t_shell *shell)
+int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 {
-    int fd[2];
-    char *line;
+	int		fd[2];
+	char	*line;
+	char	*expanded;
 
-    if (pipe(fd) == -1) { perror("pipe"); return (-1); }
-
-    while (1)
-    {
-        line = readline("> ");
-        if (!line) break;
-
-        // 1) se a linha digitada == delim, encerra
-        if (ft_strcmp(line, delim) == 0)
-        {
-            free(line);
-            break;
-        }
-
-        // 2) se expand == 1 → faz expand na variável
-        if (expand)
-        {
-            char *expanded = expand_variables(line, shell);
-            write(fd[1], expanded, ft_strlen(expanded));
-            write(fd[1], "\n", 1);
-            free(expanded);
-        }
-        else
-        {
-            write(fd[1], line, ft_strlen(line));
-            write(fd[1], "\n", 1);
-        }
-        free(line);
-    }
-    close(fd[1]);
-    return fd[0];
+	if (pipe(fd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break ;
+		// 1) se a linha digitada == delim, encerra
+		if (ft_strcmp(line, delim) == 0)
+		{
+			free(line);
+			break ;
+		}
+		// 2) se expand == 1 → faz expand na variável
+		if (expand)
+		{
+			expanded = expand_variables(line, shell);
+			write(fd[1], expanded, ft_strlen(expanded));
+			write(fd[1], "\n", 1);
+			free(expanded);
+		}
+		else
+		{
+			write(fd[1], line, ft_strlen(line));
+			write(fd[1], "\n", 1);
+		}
+		free(line);
+	}
+	close(fd[1]);
+	return (fd[0]);
 }

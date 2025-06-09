@@ -36,7 +36,7 @@ static void	handle_redirection(t_token **tokens, t_command *cur)
 	else if (t->type == TOKEN_HEREDOC && t->next)
 	{
 		*tokens = t->next;
-		cur->heredoc_delim   = gc_strdup((*tokens)->value);
+		cur->heredoc_delim = gc_strdup((*tokens)->value);
 		if ((*tokens)->was_quoted)
 			cur->heredoc_expand = 0;
 		else
@@ -73,63 +73,68 @@ static void	finalize_command(
 	*cur = new_command();
 }
 
-t_command *parse_tokens(t_token *tokens, t_shell *shell)
+t_command	*parse_tokens(t_token *tokens, t_shell *shell)
 {
-    t_command *cmds = NULL;
-    t_command *cur = new_command();
-    char *argv[MAX_ARGS] = {0};
-    int argc = 0;
+	t_command	*cmds;
+	t_command	*cur;
+	char		*argv[MAX_ARGS];
+	char		*val;
+	int			argc;
 
-    while (tokens)
-    {
-        if (tokens->type == TOKEN_WORD)
-        {
-            // Se tiver expand=1, chamamos expand aqui; se for expand=0, pegamos
-            // o valor literal sem modificação.
-            char *val = tokens->expand
-                ? expand_variables(tokens->value, shell)
-                : tokens->value;
-            argv[argc++] = gc_strdup(val);
-        }
-        else if (tokens->type == TOKEN_PIPE)
-        {
-            finalize_command(&cmds, &cur, argv, argc);
-            argc = 0;
-        }
-        else
-        {
-            // Redirecionamentos (<, >, >>, <<)
-            handle_redirection(&tokens, cur);
-        }
-        tokens = tokens->next;
-    }
-
-    if (argc > 0)
-        finalize_command(&cmds, &cur, argv, argc);
-    else if (cur && cur->args == NULL)
-        free(cur);
-    else
-        add_command(&cmds, cur);
-
-    return cmds;
+	cmds = NULL;
+	cur = new_command();
+	argc = 0;
+	ft_bzero(argv, sizeof(argv));
+	while (tokens)
+	{
+		if (tokens->type == TOKEN_WORD)
+		{
+			// Se tiver expand=1, chamamos expand aqui; se for expand=0, pegamos
+			// o valor literal sem modificação.
+			val = tokens->expand
+				? expand_variables(tokens->value, shell)
+				: tokens->value;
+			argv[argc++] = gc_strdup(val);
+		}
+		else if (tokens->type == TOKEN_PIPE)
+		{
+			finalize_command(&cmds, &cur, argv, argc);
+			argc = 0;
+		}
+		else
+		{
+			// Redirecionamentos (<, >, >>, <<)
+			handle_redirection(&tokens, cur);
+		}
+		tokens = tokens->next;
+	}
+	if (argc > 0)
+		finalize_command(&cmds, &cur, argv, argc);
+	else if (cur && cur->args == NULL)
+		free(cur);
+	else
+		add_command(&cmds, cur);
+	return (cmds);
 }
 
 int	extract_quoted_token(const char *line, int start, char quote, char **out)
 {
-	int	i = start + 1;
+	int	i;
 
+	i = start + 1;
 	while (line[i] && line[i] != quote)
 		i++;
 	if (!line[i])
 		return (-1);
 	if (out)
-	    *out = gc_strndup(&line[start + 1], i - start - 1);
+		*out = gc_strndup(&line[start + 1], i - start - 1);
 	return (i + 1);
 }
 
-static t_token *new_token_with_expand(t_token_type type, char *value, int expand, int was_quoted)
+static t_token	*new_token_with_expand(t_token_type type,
+	char *value, int expand, int was_quoted)
 {
-	t_token *token;
+	t_token	*token;
 
 	token = gc_malloc(sizeof(t_token));
 	if (!token)
@@ -142,65 +147,66 @@ static t_token *new_token_with_expand(t_token_type type, char *value, int expand
 	return (token);
 }
 
-int process_token(const char *line, int i, t_token **tokens, t_shell *shell)
+int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 {
-    t_token_type type;
-    int          op_len;
-    char        *value;
+	t_token_type	type;
+	char			*expanded;
+	char			*value;
+	char			quote;
+	char			*sym;
+	int				op_len;
+	int				next;
 
-    // 1) Quoted token: aspas simples ou duplas
-    if (line[i] == '\'' || line[i] == '"')
-    {
-        char quote = line[i];
-        int  next  = extract_quoted_token(line, i, quote, &value);
-        if (next == -1)
-        {
-            fprintf(stderr, "minishell: erro de aspas não fechadas\n");
-            return i + 1;
-        }
-        if (quote == '"')
-        {
-            char *expanded = expand_variables(value, shell);
-            add_token(tokens,
-                new_token_with_expand(TOKEN_WORD, expanded, 0, 1));
-        }
-        else
-        {
-            add_token(tokens,
-                new_token_with_expand(TOKEN_WORD, value, 0, 1));
-        }
-        return next;
-    }
-
-    // 2) Operadores: |, <, >, >>, <<
-    type = get_operator_type(&line[i], &op_len);
-    if (type != TOKEN_WORD)
-    {
-        char *sym = gc_strndup(&line[i], op_len);
-        add_token(tokens,
-            new_token_with_expand(type, sym, 0, 0));
-        return i + op_len;
-    }
-
-    // 3) Palavra ou token misto (texto + '...' + "...")
-    if (line[i] && !isspace((unsigned char)line[i]) && !ft_strchr("|<>", line[i]))
-    {
-        int next = extract_mixed_token(line, i, &value, shell);
-        if (next == -1 || !value)
-        {
-            fprintf(stderr, "minishell: erro de aspas não fechadas ou overflow\n");
-            return i + 1;
-        }
-        // value já vem com "..." expandidas e '...' literais
-        add_token(tokens,
-            new_token_with_expand(TOKEN_WORD, value, 0, 0));
-        return next;
-    }
-
-    // 4) Espaço ou caractere inválido: consome e avança
-    return i + 1;
+	// 1) Quoted token: aspas simples ou duplas
+	if (line[i] == '\'' || line[i] == '"')
+	{
+		quote = line[i];
+		next = extract_quoted_token(line, i, quote, &value);
+		if (next == -1)
+		{
+			fprintf(stderr, "minishell: erro de aspas não fechadas\n");
+			return (i + 1);
+		}
+		if (quote == '"')
+		{
+			expanded = expand_variables(value, shell);
+			add_token(tokens,
+				new_token_with_expand(TOKEN_WORD, expanded, 0, 1));
+		}
+		else
+		{
+			add_token(tokens,
+				new_token_with_expand(TOKEN_WORD, value, 0, 1));
+		}
+		return (next);
+	}
+	// 2) Operadores: |, <, >, >>, <<
+	type = get_operator_type(&line[i], &op_len);
+	if (type != TOKEN_WORD)
+	{
+		sym = gc_strndup(&line[i], op_len);
+		add_token(tokens,
+			new_token_with_expand(type, sym, 0, 0));
+		return (i + op_len);
+	}
+	// 3) Palavra ou token misto (texto + '...' + "...")
+	if (line[i] && !isspace((unsigned char)line[i])
+		&& !ft_strchr("|<>", line[i]))
+	{
+		next = extract_mixed_token(line, i, &value, shell);
+		if (next == -1 || !value)
+		{
+			fprintf(stderr, "minishell: erro! aspas não fechadas ou overflow\n");
+			return (i + 1);
+		}
+		// value já vem com "..." expandidas e '...' literais
+		add_token(tokens,
+			new_token_with_expand(TOKEN_WORD, value, 0, 0));
+		return (next);
+	}
+	// 4) Espaço ou caractere inválido: consome e avança
+	return (i + 1);
 }
-
 
 t_token	*lexer(const char *line, t_shell *shell)
 {
