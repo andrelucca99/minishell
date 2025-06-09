@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/04 15:11:43 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:51:31 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_token
 	t_token_type	type;
 	char			*value;
 	int				expand;
+	int			was_quoted;
 	struct s_token	*next;
 }	t_token;
 

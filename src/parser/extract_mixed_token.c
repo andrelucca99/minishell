@@ -6,97 +6,64 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 14:06:16 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/05 14:06:18 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/09 15:48:09 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char *ft_strjoin_g(const char *s1, const char *s2)
+static char	*ft_strjoin_g(const char *s1, const char *s2)
 {
-    size_t len1 = ft_strlen(s1);
-    size_t len2 = ft_strlen(s2);
-    char *res  = gc_malloc(len1 + len2 + 1);
-    if (!res)
-        return NULL;
-    ft_memmove(res, s1, len1);
-    ft_memmove(res + len1, s2, len2);
-    res[len1 + len2] = '\0';
-    return res;
+	size_t	l1;
+	size_t	l2;
+	char	*res;
+
+	l1 = ft_strlen(s1);
+	l2 = ft_strlen(s2);
+	res = gc_malloc(l1 + l2 + 1);
+	ft_memmove(res, s1, l1);
+	ft_memmove(res + l1, s2, l2 + 1);
+	return (res);
 }
 
-int extract_mixed_token(const char *line, int start, char **out, t_shell *shell)
+int extract_mixed_token(const char *line, int i, char **out, t_shell *shell)
 {
-    int   i = start;
-    char *result = gc_strdup("");  // string “vazia” alocada pelo GC
+    char *result = gc_strdup("");   // string inicial vazia
 
-    while (line[i])
+    while (line[i] && !isspace((unsigned char)line[i]) && !ft_strchr("|<>", line[i]))
     {
-        // 1) Se espaço ou metacaractere, encerra o token
-        if (isspace((unsigned char)line[i]) || ft_strchr("|<>", line[i]))
-            break;
-
-        // 2) Aspas simples: copia literalmente o interior, sem expansão
-        if (line[i] == '\'')
+        if (line[i] == '\'')  // aspas simples: copia literal
         {
             int j = i + 1;
-            while (line[j] && line[j] != '\'')
-                j++;
-            if (line[j] != '\'')
-            {
-                // aspas não fechada: falha
-                *out = NULL;
-                return -1;
-            }
-            int len_inside = j - (i + 1);
-            // duplica conteúdo interno
-            char *piece = gc_strndup(&line[i + 1], len_inside);
-            // junta em result
-            char *tmp = ft_strjoin_g(result, piece);
-            result = tmp;
+            while (line[j] && line[j] != '\'') j++;
+            if (line[j] != '\'') { *out = NULL; return -1; }
+            char *part = gc_strndup(&line[i + 1], j - i - 1);
+            result = ft_strjoin_g(result, part);
             i = j + 1;
-            continue;
         }
-
-        // 3) Aspas duplas: copia interior e expande
-        if (line[i] == '"')
+        else if (line[i] == '"')  // aspas duplas: copia e expande
         {
             int j = i + 1;
-            while (line[j] && line[j] != '"')
-                j++;
-            if (line[j] != '"')
-            {
-                // aspas não fechada
-                *out = NULL;
-                return -1;
-            }
-            int len_inside = j - (i + 1);
-            // duplica interior
-            char *inner = gc_strndup(&line[i + 1], len_inside);
-            // expande variáveis dentro das duplas
-            char *expanded = expand_variables(inner, shell);
-            // concatena em result
-            char *tmp = ft_strjoin_g(result, expanded);
-            result = tmp;
+            while (line[j] && line[j] != '"') j++;
+            if (line[j] != '"') { *out = NULL; return -1; }
+            char *raw      = gc_strndup(&line[i + 1], j - i - 1);
+            char *expanded = expand_variables(raw, shell);
+            result = ft_strjoin_g(result, expanded);
             i = j + 1;
-            continue;
         }
-
-        // 4) Texto “normal” sem aspas: copia até espaço ou metacaractere
-        int j = i;
-        while (line[j] && !isspace((unsigned char)line[j]) && !ft_strchr("|<>\"'", line[j]))
-            j++;
-        int len = j - i;
-        if (len > 0)
+        else  // texto normal: copia até espaço, pipe ou aspas
         {
-            char *piece = gc_strndup(&line[i], len);
-            char *tmp   = ft_strjoin_g(result, piece);
-            result = tmp;
+            int j = i;
+            while (line[j] &&
+                   !isspace((unsigned char)line[j]) &&
+                   !ft_strchr("|<>'\"", line[j]))
+                j++;
+            char *part = gc_strndup(&line[i], j - i);
+            result = ft_strjoin_g(result, part);
+            i = j;
         }
-        i = j;
     }
 
     *out = result;
     return i;
 }
-
