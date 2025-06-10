@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:52:09 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 15:53:50 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:36:39 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,10 @@ t_command	*parse_tokens(t_token *tokens, t_shell *shell)
 	{
 		if (tokens->type == TOKEN_WORD)
 		{
-			// Se tiver expand=1, chamamos expand aqui; se for expand=0, pegamos
-			// o valor literal sem modificação.
-			val = tokens->expand
-				? expand_variables(tokens->value, shell)
-				: tokens->value;
+			if (tokens->expand)
+				val = expand_variables(tokens->value, shell);
+			else
+				val = tokens->value;
 			argv[argc++] = gc_strdup(val);
 		}
 		else if (tokens->type == TOKEN_PIPE)
@@ -201,7 +200,7 @@ int	process_token(const char *line, int i, t_token **tokens, t_shell *shell)
 		}
 		// value já vem com "..." expandidas e '...' literais
 		add_token(tokens,
-			new_token_with_expand(TOKEN_WORD, value, 0, 0));
+			new_token_with_expand(TOKEN_WORD, value, 1, 0));
 		return (next);
 	}
 	// 4) Espaço ou caractere inválido: consome e avança

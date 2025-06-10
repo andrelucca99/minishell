@@ -6,18 +6,17 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:28:32 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/10 15:38:19 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:38:32 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	builtin_echo(char **args, t_shell *shell)
+int	builtin_echo(char **args)
 {
 	int		i;
 	int		j;
 	int		newline;
-	char	*expanded;
 
 	i = 1;
 	newline = 1;
@@ -33,8 +32,7 @@ int	builtin_echo(char **args, t_shell *shell)
 	}
 	while (args[i])
 	{
-		expanded = expand_variables(args[i], shell);
-		printf("%s", expanded);
+		printf("%s", args[i]);
 		if (args[i + 1])
 			printf(" ");
 		i++;

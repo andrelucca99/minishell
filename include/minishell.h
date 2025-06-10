@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 16:55:59 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:39:06 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ typedef struct s_gc
 int						is_builtin(char *cmd);
 int						exec_builtin(char **args, t_shell *shell);
 
-int						builtin_echo(char **args, t_shell *shell);
+int						builtin_echo(char **args);
 int						builtin_pwd(void);
 int						builtin_env(void);
 int						builtin_cd(char **args, t_shell *shell);

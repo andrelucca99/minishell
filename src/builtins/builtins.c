@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:25:57 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/03 15:45:38 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:37:54 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	exec_builtin(char **args, t_shell *shell)
 	if (!args[0])
 		return (1);
 	if (ft_strcmp(args[0], "echo") == 0)
-		return (builtin_echo(args, shell));
+		return (builtin_echo(args));
 	else if (ft_strcmp(args[0], "pwd") == 0)
 		return (builtin_pwd());
 	else if (ft_strcmp(args[0], "env") == 0)
