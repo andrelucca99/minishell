@@ -6,11 +6,25 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/05 14:27:37 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:46:38 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int	ft_str_is_empty(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!isspace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 int	main(void)
 {
@@ -31,6 +45,11 @@ int	main(void)
 		{
 			printf("exit\n");
 			break ;
+		}
+		if (ft_str_is_empty(line))
+		{
+			free(line);
+			continue ;
 		}
 		if (*line)
 			add_history(line);
