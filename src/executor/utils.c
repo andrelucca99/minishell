@@ -46,11 +46,28 @@ int	should_execute_builtin_in_parent(t_command *cmd)
 		&& !cmd->output_file);
 }
 
+static void	write_heredoc_line(int fd, char *line, int expand, t_shell *shell)
+{
+	char	*expanded;
+
+	if (expand)
+	{
+		expanded = expand_variables(line, shell);
+		write(fd, expanded, ft_strlen(expanded));
+		write(fd, "\n", 1);
+		free(expanded);
+	}
+	else
+	{
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+	}
+}
+
 int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 {
 	int		fd[2];
 	char	*line;
-	char	*expanded;
 
 	if (pipe(fd) == -1)
 	{
@@ -62,25 +79,12 @@ int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 		line = readline("> ");
 		if (!line)
 			break ;
-		// 1) se a linha digitada == delim, encerra
 		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
 			break ;
 		}
-		// 2) se expand == 1 → faz expand na variável
-		if (expand)
-		{
-			expanded = expand_variables(line, shell);
-			write(fd[1], expanded, ft_strlen(expanded));
-			write(fd[1], "\n", 1);
-			free(expanded);
-		}
-		else
-		{
-			write(fd[1], line, ft_strlen(line));
-			write(fd[1], "\n", 1);
-		}
+		write_heredoc_line(fd[1], line, expand, shell);
 		free(line);
 	}
 	close(fd[1]);

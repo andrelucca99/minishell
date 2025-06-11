@@ -12,12 +12,13 @@
 
 #include "../include/minishell.h"
 
-t_gc		g_gc = {NULL};
-t_gc_node	*node;
-void		*ptr;
+t_gc	g_gc = {NULL};
 
 void	*gc_malloc(size_t size)
 {
+	void		*ptr;
+	t_gc_node	*node;
+
 	ptr = malloc(size);
 	if (!ptr)
 		return (NULL);

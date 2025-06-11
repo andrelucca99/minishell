@@ -26,19 +26,13 @@ int	ft_str_is_empty(const char *str)
 	return (1);
 }
 
-int	main(void)
+static void	run_shell_loop(t_shell *shell)
 {
 	char		*line;
 	t_token		*tokens;
 	t_command	*cmds;
-	t_shell		shell;
 
-	shell.env = environ;
-	shell.last_exit_status = 0;
-	shell.running = 1;
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-	while (shell.running)
+	while (shell->running)
 	{
 		line = readline("minishell$ ");
 		if (!line)
@@ -53,11 +47,23 @@ int	main(void)
 		}
 		if (*line)
 			add_history(line);
-		tokens = lexer(line, &shell);
-		cmds = parse_tokens(tokens, &shell);
-		execute_commands(cmds, &shell);
+		tokens = lexer(line, shell);
+		cmds = parse_tokens(tokens, shell);
+		execute_commands(cmds, shell);
 		free(line);
 		gc_clear();
 	}
+}
+
+int	main(void)
+{
+	t_shell	shell;
+
+	shell.env = environ;
+	shell.last_exit_status = 0;
+	shell.running = 1;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+	run_shell_loop(&shell);
 	return (shell.last_exit_status);
 }

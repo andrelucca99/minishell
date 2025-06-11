@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/10 17:39:06 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/11 18:49:28 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,24 @@ int						handle_heredoc(const char *delim, int expand,
 							t_shell *shell);
 
 /* parser / lexer */
+void					handle_heredoc_redir(t_token **tokens, t_command *cur);
+void					handle_redirection(t_token **tokens, t_command *cur);
+void					finalize_command(t_command **cmds, t_command **cur,
+							char *argv[], int argc);
+void					parse_tokens_loop(t_token *tokens, t_shell *shell,
+							t_command **cmds, t_command **cur);
+int						extract_quoted_token(const char *line, int start,
+							char quote, char **out);
+int						handle_quoted_token(const char *line, int i,
+							t_token **tokens, t_shell *shell);
+int						handle_operator_token(const char *line, int i,
+							t_token **tokens);
+int						handle_word_token(const char *line, int i,
+							t_token **tokens, t_shell *shell);
+int						process_token(const char *line, int i, t_token **tokens,
+							t_shell *shell);
+t_token					*new_token_with_expand(t_token_type type,
+							char *value, int expand, int was_quoted);
 t_token					*lexer(const char *line, t_shell *shell);
 t_command				*parse_tokens(t_token *tokens, t_shell *shell);
 void					add_token(t_token **head, t_token *new);
