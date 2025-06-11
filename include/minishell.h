@@ -6,7 +6,7 @@
 /*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/11 18:49:28 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/11 19:26:25 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ int						handle_heredoc(const char *delim, int expand,
 /* parser / lexer */
 void					handle_heredoc_redir(t_token **tokens, t_command *cur);
 void					handle_redirection(t_token **tokens, t_command *cur);
+void					handle_token_else(t_token **tokens, t_command *cur);
+void					handle_token_pipe(t_command **cmds, t_command **cur,
+							char **argv, int *argc);
+void					handle_token_word(t_token *tokens, t_shell *shell,
+							char **argv, int *argc);
 void					finalize_command(t_command **cmds, t_command **cur,
 							char *argv[], int argc);
 void					parse_tokens_loop(t_token *tokens, t_shell *shell,
