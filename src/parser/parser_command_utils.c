@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:12:01 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/11 19:22:25 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:07:40 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,18 @@ void	handle_token_else(
 	t_token **tokens, t_command *cur)
 {
 	handle_redirection(tokens, cur);
+}
+
+char	*ft_strjoin_g(const char *s1, const char *s2)
+{
+	size_t	l1;
+	size_t	l2;
+	char	*res;
+
+	l1 = ft_strlen(s1);
+	l2 = ft_strlen(s2);
+	res = gc_malloc(l1 + l2 + 1);
+	ft_memmove(res, s1, l1);
+	ft_memmove(res + l1, s2, l2 + 1);
+	return (res);
 }

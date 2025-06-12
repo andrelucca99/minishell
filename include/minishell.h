@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/11 19:26:25 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/12 19:17:02 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,19 @@ int						builtin_unset(char **args, t_shell *shell);
 int						builtin_export(char **args, t_shell *shell);
 
 /* executor */
+void					handle_child_signal(int status);
+void					wait_for_children(t_shell *shell);
+int						execute_commands_loop(t_command *cmds, t_shell *shell);
 void					execute_commands(t_command *cmds, t_shell *shell);
 char					*find_executable(char *cmd);
 int						should_execute_builtin_in_parent(t_command *cmd);
+void					setup_redirections(t_command *cmd, int fd_in,
+							int fd[2], t_shell *shell);
 int						handle_heredoc(const char *delim, int expand,
 							t_shell *shell);
 
 /* parser / lexer */
+char					*ft_strjoin_g(const char *s1, const char *s2);
 void					handle_heredoc_redir(t_token **tokens, t_command *cur);
 void					handle_redirection(t_token **tokens, t_command *cur);
 void					handle_token_else(t_token **tokens, t_command *cur);

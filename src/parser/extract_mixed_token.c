@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   extract_mixed_token.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 14:06:16 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 15:48:09 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/12 19:06:22 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-static char	*ft_strjoin_g(const char *s1, const char *s2)
-{
-	size_t	l1;
-	size_t	l2;
-	char	*res;
-
-	l1 = ft_strlen(s1);
-	l2 = ft_strlen(s2);
-	res = gc_malloc(l1 + l2 + 1);
-	ft_memmove(res, s1, l1);
-	ft_memmove(res + l1, s2, l2 + 1);
-	return (res);
-}
 
 static int	handle_single_quote(const char *line, int i, char **result)
 {
