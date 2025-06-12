@@ -6,11 +6,12 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:37:17 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 13:20:07 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/12 15:36:16 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <errno.h>
 
 static void	handle_heredoc_input(t_command *cmd, t_shell *shell)
 {
