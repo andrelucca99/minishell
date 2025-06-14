@@ -6,7 +6,7 @@
 /*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/12 19:17:02 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:56:33 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,6 @@
 # define MAX_ARGS 128
 
 extern char				**environ;
-
-typedef struct s_shell
-{
-	char				**env;
-	int					last_exit_status;
-	int					running;
-}						t_shell;
 
 typedef enum e_token_type
 {
@@ -76,6 +69,14 @@ typedef struct s_gc
 {
 	t_gc_node			*head;
 }						t_gc;
+
+typedef struct s_shell
+{
+	char				**env;
+	int					last_exit_status;
+	int					running;
+	t_gc				gc;
+}						t_shell;
 
 /* builtins */
 
@@ -139,10 +140,12 @@ void					add_command(t_command **head, t_command *new);
 void					handle_sigint(int signo);
 
 /* garbage free */
-void					gc_clear(void);
+t_shell					*get_shell(void);
+void					set_shell(t_shell *shell);
+void					gc_clear(t_gc *gc);
 char					*gc_strndup(const char *s, size_t n);
 char					*gc_strdup(const char *s);
-void					*gc_malloc(size_t size);
+void					*gc_malloc(t_gc *gc, size_t size);
 
 char					*expand_variables(const char *str, t_shell *shell);
 

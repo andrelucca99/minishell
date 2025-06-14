@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/10 15:46:38 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:43:06 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	run_shell_loop(t_shell *shell)
 		cmds = parse_tokens(tokens, shell);
 		execute_commands(cmds, shell);
 		free(line);
-		gc_clear();
+		gc_clear(&shell->gc);
 	}
 }
 
@@ -59,6 +59,8 @@ int	main(void)
 {
 	t_shell	shell;
 
+	set_shell(&shell);
+	shell.gc.head = NULL;
 	shell.env = environ;
 	shell.last_exit_status = 0;
 	shell.running = 1;

@@ -6,7 +6,7 @@
 /*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:12:01 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/12 19:07:40 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:58:38 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 void	finalize_command(
 	t_command **cmds, t_command **cur, char *argv[], int argc)
 {
-	int	i;
+	int		i;
+	t_shell	*shell;
 
-	(*cur)->args = gc_malloc(sizeof(char *) * (argc + 1));
+	shell = get_shell();
+	(*cur)->args = gc_malloc(&shell->gc, sizeof(char *) * (argc + 1));
 	if (!(*cur)->args)
 	{
 		i = 0;
@@ -71,10 +73,12 @@ char	*ft_strjoin_g(const char *s1, const char *s2)
 	size_t	l1;
 	size_t	l2;
 	char	*res;
+	t_shell	*shell;
 
+	shell = get_shell();
 	l1 = ft_strlen(s1);
 	l2 = ft_strlen(s2);
-	res = gc_malloc(l1 + l2 + 1);
+	res = gc_malloc(&shell->gc, (l1 + l2 + 1));
 	ft_memmove(res, s1, l1);
 	ft_memmove(res + l1, s2, l2 + 1);
 	return (res);
