@@ -6,7 +6,7 @@
 /*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:46:51 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/12 18:47:16 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/14 14:39:37 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	handle_heredoc_input(t_command *cmd, t_shell *shell)
 	in = handle_heredoc(cmd->heredoc_delim, cmd->heredoc_expand, shell);
 	if (in < 0)
 	{
-		gc_clear();
+		gc_clear(&shell->gc);
 		exit(1);
 	}
 	dup2(in, STDIN_FILENO);
@@ -28,13 +28,15 @@ static void	handle_heredoc_input(t_command *cmd, t_shell *shell)
 
 static void	handle_file_input(t_command *cmd)
 {
-	int	in;
+	int		in;
+	t_shell	*shell;
 
+	shell = get_shell();
 	in = open(cmd->input_file, O_RDONLY);
 	if (in < 0)
 	{
 		perror("open input");
-		gc_clear();
+		gc_clear(&shell->gc);
 		exit(1);
 	}
 	dup2(in, STDIN_FILENO);
@@ -56,8 +58,10 @@ static void	setup_input_redir(t_command *cmd, int fd_in, t_shell *shell)
 
 static void	setup_output_redir(t_command *cmd, int fd[2])
 {
-	int	out;
+	int		out;
+	t_shell	*shell;
 
+	shell = get_shell();
 	if (cmd->output_file)
 	{
 		out = open(cmd->output_file,
@@ -66,7 +70,7 @@ static void	setup_output_redir(t_command *cmd, int fd[2])
 		if (out < 0)
 		{
 			perror("open output");
-			gc_clear();
+			gc_clear(&shell->gc);
 			exit(1);
 		}
 		dup2(out, STDOUT_FILENO);

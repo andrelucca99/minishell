@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_token.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 18:26:01 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/11 18:48:51 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:00:18 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ t_token	*new_token_with_expand(t_token_type type,
 	char *value, int expand, int was_quoted)
 {
 	t_token	*token;
+	t_shell	*shell;
 
-	token = gc_malloc(sizeof(t_token));
+	shell = get_shell();
+	token = gc_malloc(&shell->gc, sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->type = type;

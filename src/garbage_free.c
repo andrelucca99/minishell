@@ -6,15 +6,13 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:22:14 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/09 13:20:16 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:42:47 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-t_gc	g_gc = {NULL};
-
-void	*gc_malloc(size_t size)
+void	*gc_malloc(t_gc *gc, size_t size)
 {
 	void		*ptr;
 	t_gc_node	*node;
@@ -25,12 +23,12 @@ void	*gc_malloc(size_t size)
 	node = malloc(sizeof(t_gc_node));
 	if (!node)
 	{
-		free(ptr);
+		free(node);
 		return (NULL);
 	}
 	node->ptr = ptr;
-	node->next = g_gc.head;
-	g_gc.head = node;
+	node->next = gc->head;
+	gc->head = node;
 	return (ptr);
 }
 
@@ -38,9 +36,11 @@ char	*gc_strdup(const char *s)
 {
 	size_t	len;
 	char	*dup;
+	t_shell	*shell;
 
+	shell = get_shell();
 	len = ft_strlen(s);
-	dup = gc_malloc(len + 1);
+	dup = gc_malloc(&shell->gc, len + 1);
 	if (!dup)
 		return (NULL);
 	ft_strcpy(dup, s);
@@ -52,11 +52,13 @@ char	*gc_strndup(const char *s, size_t n)
 	size_t	len;
 	size_t	i;
 	char	*dup;
+	t_shell	*shell;
 
+	shell = get_shell();
 	len = 0;
 	while (s[len] && len < n)
 		len++;
-	dup = gc_malloc(len + 1);
+	dup = gc_malloc(&shell->gc, len + 1);
 	if (!dup)
 		return (NULL);
 	i = 0;
@@ -69,12 +71,12 @@ char	*gc_strndup(const char *s, size_t n)
 	return (dup);
 }
 
-void	gc_clear(void)
+void	gc_clear(t_gc *gc)
 {
 	t_gc_node	**cur;
 	t_gc_node	*next;
 
-	cur = &g_gc.head;
+	cur = &gc->head;
 	while (*cur)
 	{
 		next = (*cur)->next;

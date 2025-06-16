@@ -6,7 +6,7 @@
 /*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:50:29 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/12 19:03:48 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/14 14:44:25 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 	}
 	execve(path, cmd->args, environ);
 	perror("execve");
-	gc_clear();
+	gc_clear(&shell->gc);
 	exit(1);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:49:54 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/02 15:30:45 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:01:02 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 t_command	*new_command(void)
 {
 	t_command	*cmd;
+	t_shell		*shell;
 
-	cmd = gc_malloc(sizeof(t_command));
+	shell = get_shell();
+	cmd = gc_malloc(&shell->gc, sizeof(t_command));
 	if (!cmd)
 		return (NULL);
 	cmd->args = NULL;

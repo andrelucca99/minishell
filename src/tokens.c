@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:10:46 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/05/27 16:43:53 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/14 14:43:12 by eschula          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 t_token	*new_token(t_token_type type, const char *value)
 {
 	t_token	*token;
+	t_shell	*shell;
 
-	token = gc_malloc(sizeof(t_token));
+	shell = get_shell();
+	token = gc_malloc(&shell->gc, sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->type = type;

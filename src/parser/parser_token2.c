@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_token2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <eschula@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 18:30:16 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/11 18:35:02 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/16 19:03:01 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,34 @@ int	handle_word_token(const char *line,
 	}
 	add_token(tokens, new_token_with_expand(TOKEN_WORD, value, 1, 0));
 	return (next);
+}
+
+void	finalize_command(
+	t_command **cmds, t_command **cur, char *argv[], int argc)
+{
+	int		i;
+	t_shell	*shell;
+
+	shell = get_shell();
+	(*cur)->args = gc_malloc(&shell->gc, sizeof(char *) * (argc + 1));
+	if (!(*cur)->args)
+	{
+		i = 0;
+		while (i < argc)
+		{
+			free(argv[i]);
+			argv[i] = NULL;
+			i++;
+		}
+		return ;
+	}
+	i = 0;
+	while (i < argc)
+	{
+		(*cur)->args[i] = argv[i];
+		argv[i++] = NULL;
+	}
+	(*cur)->args[argc] = NULL;
+	add_command(cmds, *cur);
+	*cur = new_command();
 }
