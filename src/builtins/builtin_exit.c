@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:28:32 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/12 15:21:09 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/16 19:07:27 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	is_numeric(const char *str)
 	i = 0;
 	if (!str || !*str)
 		return (0);
-	if (str[0] == '-' || str[0] == '+')
+	if (str[i] == '+' || str[i] == '-')
 		i++;
 	while (str[i])
 	{
@@ -28,6 +28,26 @@ static int	is_numeric(const char *str)
 		i++;
 	}
 	return (1);
+}
+
+static void	handle_exit_code(char **args, t_shell *shell)
+{
+	int	exit_code;
+
+	if (args[1])
+	{
+		if (!is_numeric(args[1]))
+		{
+			fprintf(stderr, "exit: %s: numeric argument required\n", args[1]);
+			gc_clear(&shell->gc);
+			exit(2);
+		}
+		exit_code = ft_atoi(args[1]) % 256;
+		gc_clear(&shell->gc);
+		exit(exit_code);
+	}
+	gc_clear(&shell->gc);
+	exit(shell->last_exit_status);
 }
 
 int	builtin_exit(char **args, t_shell *shell)
@@ -44,14 +64,6 @@ int	builtin_exit(char **args, t_shell *shell)
 		shell->last_exit_status = 1;
 		return (1);
 	}
-	if (args[1])
-	{
-		if (!is_numeric(args[1]))
-		{
-			fprintf(stderr, "exit: %s: numeric argument required\n", args[1]);
-			exit(2);
-		}
-		exit(ft_atoi(args[1]) % 256);
-	}
-	exit(shell->last_exit_status);
+	handle_exit_code(args, shell);
+	return (0);
 }

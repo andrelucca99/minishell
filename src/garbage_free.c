@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_free.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:22:14 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/14 14:30:33 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:42:47 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*gc_malloc(t_gc *gc, size_t size)
 	node = malloc(sizeof(t_gc_node));
 	if (!node)
 	{
-		free(ptr);
+		free(node);
 		return (NULL);
 	}
 	node->ptr = ptr;

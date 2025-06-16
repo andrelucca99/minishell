@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_mixed_token.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 14:06:16 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/12 19:06:22 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:15:40 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,12 @@ static int	handle_double_quote(const char *line,
 static int	handle_plain_text(const char *line, int i, char **result)
 {
 	int		j;
-	char	*part;
 
 	j = i;
 	while (line[j] && !isspace((unsigned char)line[j])
 		&& !ft_strchr("|<>'\"", line[j]))
 		j++;
-	part = gc_strndup(&line[i], j - i);
-	*result = ft_strjoin_g(*result, part);
+	*result = ft_strjoin_g_len(*result, &line[i], j - i);
 	return (j);
 }
 
@@ -87,7 +85,7 @@ int	extract_mixed_token(const char *line, int i, char **out, t_shell *shell)
 {
 	char	*result;
 
-	result = gc_strdup("");
+	result = NULL;
 	while (line[i] && !isspace((unsigned char)line[i])
 		&& !ft_strchr("|<>", line[i]))
 	{

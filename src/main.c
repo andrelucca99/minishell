@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/13 14:43:06 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:50:19 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,15 @@ static void	run_shell_loop(t_shell *shell)
 
 int	main(void)
 {
-	t_shell	shell;
+	t_shell	*shell;
 
-	set_shell(&shell);
-	shell.gc.head = NULL;
-	shell.env = environ;
-	shell.last_exit_status = 0;
-	shell.running = 1;
+	shell = get_shell();
+	shell->gc.head = NULL;
+	shell->env = environ;
+	shell->last_exit_status = 0;
+	shell->running = 1;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
-	run_shell_loop(&shell);
-	return (shell.last_exit_status);
+	run_shell_loop(shell);
+	return (shell->last_exit_status);
 }

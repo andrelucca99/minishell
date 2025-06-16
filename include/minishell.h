@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/13 14:56:33 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/16 18:58:05 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ typedef struct s_shell
 }						t_shell;
 
 /* builtins */
-
 int						is_builtin(char *cmd);
 int						exec_builtin(char **args, t_shell *shell);
 
@@ -153,5 +152,8 @@ void					gc_list(void);
 
 int						extract_mixed_token(const char *line, int start,
 							char **out, t_shell *shell);
+
+char					*ft_strjoin_g_len(
+							const char *s1, const char *s2, size_t len2);
 
 #endif
