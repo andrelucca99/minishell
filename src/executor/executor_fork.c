@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_fork.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:50:29 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/14 14:44:25 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/17 18:02:36 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 	if (!path)
 	{
 		fprintf(stderr, "command not found: %s\n", cmd->args[0]);
+		gc_clear(&shell->gc);
 		exit(127);
 	}
 	execve(path, cmd->args, environ);
