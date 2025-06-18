@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_child.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eschula <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:46:51 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/14 14:39:37 by eschula          ###   ########.fr       */
+/*   Updated: 2025/06/18 14:54:31 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,17 @@ static void	setup_output_redir(t_command *cmd, int fd[2])
 {
 	int		out;
 	t_shell	*shell;
+	int		flags;
 
 	shell = get_shell();
 	if (cmd->output_file)
 	{
-		out = open(cmd->output_file,
-				O_WRONLY | O_CREAT | (cmd->append_mode
-					&& O_APPEND) | (!cmd->append_mode && O_TRUNC), 0644);
+		flags = O_WRONLY | O_CREAT;
+		if (cmd->append_mode)
+			flags |= O_APPEND;
+		else
+			flags |= O_TRUNC;
+		out = open(cmd->output_file, flags, 0644);
 		if (out < 0)
 		{
 			perror("open output");

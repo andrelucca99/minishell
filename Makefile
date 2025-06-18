@@ -39,6 +39,6 @@ fclean: clean
 re: fclean all
 
 val:
-	valgrind --leak-check=full --show-leak-kinds=all --suppressions=my.supp ./minishell
+	valgrind --leak-check=full --show-leak-kinds=all --suppressions=my.supp --track-fds=yes ./minishell
 
 .PHONY: all clean fclean re val

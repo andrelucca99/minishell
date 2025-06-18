@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 19:30:34 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/11 13:58:46 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/18 14:56:31 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ char	*find_executable(char *cmd)
 		}
 		token = ft_strtok(NULL, ":");
 	}
-	free(paths);
 	return (NULL);
 }
 
@@ -64,11 +63,20 @@ static void	write_heredoc_line(int fd, char *line, int expand, t_shell *shell)
 	}
 }
 
+static void	handle_heredoc_sigint(int sig)
+{
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	gc_clear(&get_shell()->gc);
+	exit(130);
+}
+
 int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 {
 	int		fd[2];
 	char	*line;
 
+	signal(SIGINT, handle_heredoc_sigint);
 	if (pipe(fd) == -1)
 	{
 		perror("pipe");
@@ -87,6 +95,7 @@ int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 		write_heredoc_line(fd[1], line, expand, shell);
 		free(line);
 	}
+	signal(SIGINT, SIG_IGN);
 	close(fd[1]);
 	return (fd[0]);
 }
