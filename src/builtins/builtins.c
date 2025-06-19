@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:25:57 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/11 14:00:41 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/18 16:19:25 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	is_builtin(char *cmd)
 		|| ft_strcmp(cmd, "env") == 0
 		|| ft_strcmp(cmd, "export") == 0
 		|| ft_strcmp(cmd, "unset") == 0
+		|| ft_strcmp(cmd, "exit") == 0
 		|| ft_strcmp(cmd, "exit") == 0
 	);
 }

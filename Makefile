@@ -7,7 +7,7 @@ SRCS = src/main.c src/garbage_free.c src/sigint.c \
 	src/builtins/builtins.c src/parser/parser_command.c src/parser/parser_command_utils.c \
 	src/parser/parser_lexer.c src/parser/parser_redir.c src/parser/parser_token.c \
 	src/parser/parser_token2.c src/parser/extract_mixed_token.c src/parser/utils.c \
-	src/executor/executor.c src/executor/executor_child.c src/executor/utils.c src/tokens.c \
+	src/executor/executor.c src/executor/executor_child.c src/executor/utils.c src/executor/utils_exec_child.c src/tokens.c \
 	src/executor/executor_fork.c src/executor/executor_wait.c src/global_shell.c \
 	src/builtins/builtin_echo.c src/builtins/builtin_pwd.c \
 	src/builtins/builtin_env.c src/builtins/builtin_cd.c \

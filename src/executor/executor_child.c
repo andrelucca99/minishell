@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:46:51 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/18 14:54:31 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:27:39 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,38 +53,6 @@ static void	setup_input_redir(t_command *cmd, int fd_in, t_shell *shell)
 	{
 		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
-	}
-}
-
-static void	setup_output_redir(t_command *cmd, int fd[2])
-{
-	int		out;
-	t_shell	*shell;
-	int		flags;
-
-	shell = get_shell();
-	if (cmd->output_file)
-	{
-		flags = O_WRONLY | O_CREAT;
-		if (cmd->append_mode)
-			flags |= O_APPEND;
-		else
-			flags |= O_TRUNC;
-		out = open(cmd->output_file, flags, 0644);
-		if (out < 0)
-		{
-			perror("open output");
-			gc_clear(&shell->gc);
-			exit(1);
-		}
-		dup2(out, STDOUT_FILENO);
-		close(out);
-	}
-	else if (cmd->next)
-	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:50:29 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/17 18:02:36 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:27:33 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,36 +32,48 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 		gc_clear(&shell->gc);
 		exit(127);
 	}
-	execve(path, cmd->args, environ);
+	execve(path, cmd->args, shell->env);
 	perror("execve");
 	gc_clear(&shell->gc);
 	exit(1);
 }
 
-int	execute_commands_loop(t_command *cmds, t_shell *shell)
+static int	execute_single_command(t_command *cmd, int *fd_in, t_shell *shell)
 {
 	int		fd[2];
-	int		fd_in;
 	pid_t	pid;
+
+	if (cmd->next && pipe(fd) == -1)
+	{
+		perror("pipe");
+		return (-1);
+	}
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), -1);
+	if (pid == 0)
+		execute_child(cmd, *fd_in, fd, shell);
+	if (*fd_in != STDIN_FILENO)
+		close(*fd_in);
+	if (cmd->next)
+	{
+		close(fd[1]);
+		*fd_in = fd[0];
+	}
+	else
+		*fd_in = STDIN_FILENO;
+	return (0);
+}
+
+int	execute_commands_loop(t_command *cmds, t_shell *shell)
+{
+	int	fd_in;
 
 	fd_in = STDIN_FILENO;
 	while (cmds)
 	{
-		if (cmds->next && pipe(fd) == -1)
-		{
-			perror("pipe");
+		if (execute_single_command(cmds, &fd_in, shell) == -1)
 			return (-1);
-		}
-		pid = fork();
-		if (pid == 0)
-			execute_child(cmds, fd_in, fd, shell);
-		if (fd_in != STDIN_FILENO)
-			close(fd_in);
-		if (cmds->next)
-		{
-			close(fd[1]);
-			fd_in = fd[0];
-		}
 		cmds = cmds->next;
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/16 18:58:05 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 14:25:06 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int						builtin_export(char **args, t_shell *shell);
 /* executor */
 void					handle_child_signal(int status);
 void					wait_for_children(t_shell *shell);
+void					setup_output_redir(t_command *cmd, int fd[2]);
 int						execute_commands_loop(t_command *cmds, t_shell *shell);
 void					execute_commands(t_command *cmds, t_shell *shell);
 char					*find_executable(char *cmd);
