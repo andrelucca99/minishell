@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 18:16:30 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/19 18:58:52 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:16:27 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,10 @@ void	parse_tokens_loop(
 	t_token *tokens, t_shell *shell, t_command **cmds, t_command **cur)
 {
 	char		*argv[MAX_ARGS];
-	int			cnt_heredoc;
 	t_token		*token_head;
 	int			argc;
 
 	argc = 0;
-	cnt_heredoc = 0;
 	token_head = tokens;
 	ft_bzero(argv, sizeof(argv));
 	while (tokens)
@@ -56,8 +54,7 @@ void	parse_tokens_loop(
 		free(*cur);
 	else
 		add_command(cmds, *cur);
-	cnt_heredoc = heredoc_counter(token_head);
-	(*cmds)->heredoc_cnt = cnt_heredoc;
+	(*cmds)->heredoc_cnt = heredoc_counter(token_head);
 }
 
 t_command	*parse_tokens(t_token *tokens, t_shell *shell)

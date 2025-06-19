@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/19 17:43:16 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:19:08 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	ft_str_is_empty(const char *str)
 	}
 	return (1);
 }
-
 
 static void	run_shell_loop(t_shell *shell)
 {
@@ -47,8 +46,7 @@ static void	run_shell_loop(t_shell *shell)
 			free(line);
 			continue ;
 		}
-		if (*line)
-			add_history(line);
+		add_history(line);
 		tokens = lexer(line, shell);
 		cmds = parse_tokens(tokens, shell);
 		execute_commands(cmds, shell);

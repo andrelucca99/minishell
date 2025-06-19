@@ -6,19 +6,13 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:50:29 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/19 18:58:06 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:07:38 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	std_cmd_c(int sig)
-{
-	(void)sig;
-	return ;
-}
-
-static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
+void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 {
 	char	*path;
 	int		tmp;
@@ -47,32 +41,12 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 
 static int	execute_single_command(t_command *cmd, int *fd_in, t_shell *shell)
 {
-	int		fd[2];
-	pid_t	pid;
+	int	fd[2];
 
-	if (cmd->next && pipe(fd) == -1)
-	{
-		perror("pipe");
+	if (prepare_pipe_and_signal(cmd, fd) == -1)
 		return (-1);
-	}
-	if (cmd->heredoc_cnt)
-		signal(SIGINT, SIG_IGN);
-	else
-		signal(SIGINT, std_cmd_c);
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), -1);
-	if (pid == 0)
-		execute_child(cmd, *fd_in, fd, shell);
-	if (*fd_in != STDIN_FILENO)
-		close(*fd_in);
-	if (cmd->next)
-	{
-		close(fd[1]);
-		*fd_in = fd[0];
-	}
-	else
-		*fd_in = STDIN_FILENO;
+	if (fork_and_execute(cmd, fd_in, fd, shell) == -1)
+		return (-1);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/19 18:48:56 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:07:59 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ void					setup_redirections(t_command *cmd, int fd_in,
 							int fd[2], t_shell *shell);
 int						handle_heredoc(const char *delim, int expand,
 							t_shell *shell);
+int						prepare_pipe_and_signal(t_command *cmd, int fd[2]);
+int						fork_and_execute(t_command *cmd,
+							int *fd_in, int fd[2], t_shell *shell);
+void					execute_child(t_command *cmd,
+							int fd_in, int fd[2], t_shell *shell);
 
 /* parser / lexer */
 char					*ft_strjoin_g(const char *s1, const char *s2);
