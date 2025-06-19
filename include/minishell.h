@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 16:08:13 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/19 14:25:06 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:48:56 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_command
 	int					append_mode;
 	char				*heredoc_delim;
 	int					heredoc_expand;
+	int					heredoc_cnt;
 	struct s_command	*next;
 }						t_command;
 
@@ -75,6 +76,7 @@ typedef struct s_shell
 	char				**env;
 	int					last_exit_status;
 	int					running;
+	int					*fd_file;
 	t_gc				gc;
 }						t_shell;
 

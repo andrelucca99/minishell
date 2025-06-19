@@ -6,7 +6,7 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 14:56:29 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/18 18:19:31 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 17:43:16 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	ft_str_is_empty(const char *str)
 	return (1);
 }
 
+
 static void	run_shell_loop(t_shell *shell)
 {
 	char		*line;
@@ -34,6 +35,7 @@ static void	run_shell_loop(t_shell *shell)
 
 	while (shell->running)
 	{
+		signal(SIGINT, handle_sigint);
 		line = readline("minishell$ ");
 		if (!line)
 		{
@@ -64,7 +66,6 @@ int	main(void)
 	shell->env = environ;
 	shell->last_exit_status = 0;
 	shell->running = 1;
-	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	run_shell_loop(shell);
 	return (shell->last_exit_status);

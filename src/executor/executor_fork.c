@@ -6,11 +6,17 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 18:50:29 by eschula           #+#    #+#             */
-/*   Updated: 2025/06/19 15:27:33 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:58:06 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	std_cmd_c(int sig)
+{
+	(void)sig;
+	return ;
+}
 
 static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 {
@@ -18,7 +24,8 @@ static void	execute_child(t_command *cmd, int fd_in, int fd[2], t_shell *shell)
 	int		tmp;
 
 	signal(SIGQUIT, SIG_DFL);
-	signal(SIGINT, SIG_DFL);
+	if (cmd->heredoc_cnt)
+		signal(SIGINT, SIG_IGN);
 	setup_redirections(cmd, fd_in, fd, shell);
 	if (is_builtin(cmd->args[0]))
 	{
@@ -48,6 +55,10 @@ static int	execute_single_command(t_command *cmd, int *fd_in, t_shell *shell)
 		perror("pipe");
 		return (-1);
 	}
+	if (cmd->heredoc_cnt)
+		signal(SIGINT, SIG_IGN);
+	else
+		signal(SIGINT, std_cmd_c);
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), -1);

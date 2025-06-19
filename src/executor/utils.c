@@ -6,11 +6,21 @@
 /*   By: alucas-e <alucas-e@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 19:30:34 by alucas-e          #+#    #+#             */
-/*   Updated: 2025/06/19 14:13:43 by alucas-e         ###   ########.fr       */
+/*   Updated: 2025/06/19 18:57:36 by alucas-e         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static void	teste_heredoc(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	gc_clear(&(get_shell()->gc));
+	close(get_shell()->fd_file[0]);
+	close(get_shell()->fd_file[1]);
+	exit(130);
+}
 
 char	*find_executable(char *cmd)
 {
@@ -73,8 +83,10 @@ int	handle_heredoc(const char *delim, int expand, t_shell *shell)
 		perror("pipe");
 		return (-1);
 	}
+	shell->fd_file = fd;
 	while (1)
 	{
+		signal(SIGINT, teste_heredoc);
 		line = readline("> ");
 		if (!line)
 			break ;
