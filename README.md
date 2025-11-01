@@ -6,8 +6,8 @@ Minishell é um projeto da 42 School que consiste em implementar um shell minima
 
 ## Integrantes
 
-- André Lucas
-- Emerson Schuma
+- <a href="https://github.com/andrelucca99" target="_blank">André Lucas</a>
+- <a href="https://github.com/EmersonSchula" target="_blank">Emerson Schuma</a>
 
 ---
 
